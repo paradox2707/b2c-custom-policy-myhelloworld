@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TrustFrameworkPolicy 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" 
+  PolicySchemaVersion="0.3.0.0" 
+  TenantId="aslyzhukorg.onmicrosoft.com" 
+  PolicyId="B2C_1A_TrustFrameworkExtensions_MySimpleSignIn" 
+  PublicPolicyUri="http://aslyzhukorg.onmicrosoft.com/B2C_1A_TrustFrameworkExtensions_MySimpleSignIn">
+  
+  <BasePolicy>
+    <TenantId>aslyzhukorg.onmicrosoft.com</TenantId>
+    <PolicyId>B2C_1A_TrustFrameworkBase_MySimpleSignIn</PolicyId>
+  </BasePolicy>
+
+  <!-- BuildingBlocks -->
+  <!-- You can define additional BuildingBlocks or override the existing ones from Base policy -->
+  
+  <!-- ClaimsProviders -->
+  <ClaimsProviders>
+    <!-- Adding a new ClaimsProvider for Multi-Factor Authentication -->
+    <ClaimsProvider>
+      <DisplayName>Multi-Factor Authentication</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="PhoneFactor-InputOrVerify">
+          <DisplayName>Phone Factor Authentication</DisplayName>
+          <Protocol Name="Proprietary" Handler="Microsoft.Cpim.DataContract.PhoneFactorProtocolProvider, Microsoft.Cpim.DataContract, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"/>
+          <Metadata>
+            <Item Key="ContentDefinitionReferenceId">api.phonefactor</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="signInName" PartnerClaimType="UserId" />
+          </InputClaims>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="Verified.strongAuthenticationPhoneNumber" PartnerClaimType="Verified.StrongAuthenticationPhoneNumber"/>
+          </OutputClaims>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-MFA"/>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+    <!-- Example of overriding a Base policy ClaimsProvider -->
+    <ClaimsProvider>
+      <DisplayName>Local Account SignIn</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="SelfAsserted-LocalAccountSignin-Email">
+          <Metadata>
+            <Item Key="setting.showSignupLink">false</Item>
+            <Item Key="setting.forgotPasswordLinkLocation">none</Item>
+          </Metadata>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+  </ClaimsProviders>
+
+</TrustFrameworkPolicy>

@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TrustFrameworkPolicy
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06"
+  PolicySchemaVersion="0.3.0.0"
+  TenantId="aslyzhukorg.onmicrosoft.com"
+  PolicyId="B2C_1A_TrustFrameworkBase_MySimpleSignIn"
+  PublicPolicyUri="http://aslyzhukorg.onmicrosoft.com/B2C_1A_TrustFrameworkBase_MySimpleSignIn">
+
+  <BasePolicy>
+    <TenantId>aslyzhukorg.onmicrosoft.com</TenantId>
+    <PolicyId>BasePolicy</PolicyId>
+  </BasePolicy>
+
+  <!-- BuildingBlocks -->
+  <BuildingBlocks>
+    <ClaimsSchema>
+      <ClaimType Id="email">
+        <DisplayName>Email Address</DisplayName>
+        <DataType>string</DataType>
+        <UserInputType>TextBox</UserInputType>
+      </ClaimType>
+      <ClaimType Id="givenName">
+        <DisplayName>First Name</DisplayName>
+        <DataType>string</DataType>
+        <UserInputType>TextBox</UserInputType>
+      </ClaimType>
+      <ClaimType Id="surname">
+        <DisplayName>Last Name</DisplayName>
+        <DataType>string</DataType>
+        <UserInputType>TextBox</UserInputType>
+      </ClaimType>
+    </ClaimsSchema>
+    <ContentDefinitions>
+      <ContentDefinition Id="api.signuporsignin">
+        <LoadUri>~/tenant/templates/AzureBlue/unified.cshtml</LoadUri>
+        <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
+        <DataUri>urn:com:microsoft:aad:b2c:elements:contract:unifiedssp:2.1.5</DataUri>
+        <Metadata>
+          <Item Key="DisplayName">Sign-up or sign-in</Item>
+        </Metadata>
+      </ContentDefinition>
+    </ContentDefinitions>
+      <!-- Correct placement of CryptographicKeys -->
+    <CryptographicKeys>
+      <Key Id="B2C_1A_TokenSigningKeyContainer" StorageReferenceId="B2C_1A_TokenSigningKeyContainer" />
+      <Key Id="B2C_1A_TokenEncryptionKeyContainer" StorageReferenceId="B2C_1A_TokenEncryptionKeyContainer" />
+    </CryptographicKeys>
+  </BuildingBlocks>
+
+
+
+  <!-- ClaimsProviders -->
+  <ClaimsProviders>
+    <ClaimsProvider>
+      <DisplayName>Local Account SignIn</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="SelfAsserted-LocalAccountSignin-Email">
+          <DisplayName>Local Account SignIn</DisplayName>
+          <Protocol Name="OpenIdConnect"/>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="email" />
+            <OutputClaim ClaimTypeReferenceId="givenName" />
+            <OutputClaim ClaimTypeReferenceId="surname" />
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="CreateRandomUPNUserName"/>
+          </OutputClaimsTransformations>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-AAD"/>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+    <ClaimsProvider>
+      <DisplayName>Token Issuer</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="JwtIssuer">
+          <DisplayName>JWT Issuer</DisplayName>
+          <Protocol Name="None" />
+          <OutputTokenFormat>JWT</OutputTokenFormat>
+          <Metadata>
+            <Item Key="IssuerRefreshTokenUserIdentityClaimType">objectId</Item>
+            <Item Key="AllowTokenIssuanceWithoutSigningKey">false</Item>
+            <Item Key="client_id">IdentityExperienceFramework_populate_by_value</Item>
+            <Item Key="SendRefreshToken">true</Item>
+            <Item Key="RefreshTokenLifetime">14</Item>
+          </Metadata>
+          <CryptographicKeys>
+            <Key Id="issuer_secret" StorageReferenceId="B2C_1A_TokenSigningKeyContainer" />
+            <Key Id="issuer_refresh_token_key" StorageReferenceId="B2C_1A_TokenEncryptionKeyContainer" />
+          </CryptographicKeys>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+  </ClaimsProviders>
+</TrustFrameworkPolicy>
