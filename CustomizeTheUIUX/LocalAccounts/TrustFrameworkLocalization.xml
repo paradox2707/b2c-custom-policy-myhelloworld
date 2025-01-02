@@ -26,6 +26,7 @@
       <ContentDefinition Id="api.localaccountsignup">
         <LocalizedResourcesReferences MergeBehavior="Prepend">
           <LocalizedResourcesReference Language="en" LocalizedResourcesReferenceId="api.localaccountsignup.en" />
+          <LocalizedResourcesReference Language="es" LocalizedResourcesReferenceId="api.localaccountsignup.es" />
           <!-- Add more languages here -->
         </LocalizedResourcesReferences>
       </ContentDefinition>
@@ -69,9 +70,27 @@
     <Localization Enabled="true">
       <SupportedLanguages DefaultLanguage="en" MergeBehavior="Append">
         <SupportedLanguage>en</SupportedLanguage>
+        <SupportedLanguage>es</SupportedLanguage>
       </SupportedLanguages>
 
+      <LocalizedResources Id="api.localaccountsignup.es">
+        <LocalizedCollections>
+          <LocalizedCollection ElementType="ClaimType" ElementId="city" TargetCollection="Restriction">
+            <Item Text="Berlina" Value="Berlin"></Item>
+            <Item Text="Londres" Value="London" SelectByDefault="true"></Item>
+            <Item Text="Seattle" Value="Seattle"></Item>
+          </LocalizedCollection>
+        </LocalizedCollections>
+      </LocalizedResources>
+
       <LocalizedResources Id="api.signuporsignin.en">
+        <LocalizedCollections>
+          <LocalizedCollection ElementType="ClaimType" ElementId="city" TargetCollection="Restriction">
+            <Item Text="Berlin" Value="Berlin"></Item>
+            <Item Text="London" Value="London" SelectByDefault="true"></Item>
+            <Item Text="Seattle" Value="Seattle"></Item>
+          </LocalizedCollection>
+        </LocalizedCollections>
         <LocalizedStrings>
           <LocalizedString ElementType="ClaimType" ElementId="signInName" StringId="DisplayName">Email Address</LocalizedString>
           <LocalizedString ElementType="UxElement" StringId="heading">Sign in</LocalizedString>
