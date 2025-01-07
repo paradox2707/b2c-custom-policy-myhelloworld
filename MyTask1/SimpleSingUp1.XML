@@ -267,6 +267,8 @@
                         <OutputClaim ClaimTypeReferenceId="email"/>
                         <OutputClaim ClaimTypeReferenceId="password"/>
                         <OutputClaim ClaimTypeReferenceId="reenterPassword"/>
+                        <OutputClaim ClaimTypeReferenceId="objectId"/>
+                        <OutputClaim ClaimTypeReferenceId="displayName"/>
                     </OutputClaims>
                     <ValidationTechnicalProfiles>
                         <ValidationTechnicalProfile ReferenceId="UserInputDisplayNameGenerator"/>
@@ -292,45 +294,22 @@
                     </Metadata>
                     <InputClaims>
                         <!-- <InputClaim ClaimTypeReferenceId="surname" PartnerClaimType="signInNames.xxxId" Required="true" /> -->
-                        <InputClaim ClaimTypeReferenceId="email" PartnerClaimType="signInNames.emailAddress2" Required="true" />
+                        <InputClaim ClaimTypeReferenceId="email" PartnerClaimType="signInNames.emailAddress" Required="true" />
                     </InputClaims>
                     <PersistedClaims>
-                        <PersistedClaim ClaimTypeReferenceId="email" PartnerClaimType="signInNames.emailAddress2" />        
+                        <PersistedClaim ClaimTypeReferenceId="email" PartnerClaimType="signInNames.emailAddress" />        
                         <PersistedClaim ClaimTypeReferenceId="displayName" />
                         <PersistedClaim ClaimTypeReferenceId="givenName" />
                         <PersistedClaim ClaimTypeReferenceId="surname"/>
-                        <!-- <PersistedClaim ClaimTypeReferenceId="surname" PartnerClaimType="signInNames.xxxId"/> -->
+                        <PersistedClaim ClaimTypeReferenceId="surname" PartnerClaimType="signInNames.xxxId"/>
                         <PersistedClaim ClaimTypeReferenceId="password"/>
                         <PersistedClaim ClaimTypeReferenceId="passwordPolicies" DefaultValue="DisablePasswordExpiration,DisableStrongPassword" />
                     </PersistedClaims>
                     <OutputClaims>
-                        <OutputClaim ClaimTypeReferenceId="objectId" />
+                        <OutputClaim ClaimTypeReferenceId="objectId"/>
                         <OutputClaim ClaimTypeReferenceId="userPrincipalName" />
-                        <OutputClaim ClaimTypeReferenceId="email" PartnerClaimType="signInNames.emailAddress2" />
-                        <!-- <OutputClaim ClaimTypeReferenceId="surname" PartnerClaimType="signInNames.xxxId" /> -->
-                    </OutputClaims>
-                </TechnicalProfile>
-            </TechnicalProfiles>
-        </ClaimsProvider>
-        <ClaimsProvider>
-            <DisplayName>OpenID Connect Technical Profiles</DisplayName>
-            <TechnicalProfiles>
-                <TechnicalProfile Id="UserSignInCollector">
-                    <DisplayName>Local Account Signin</DisplayName>
-                    <Protocol Name="Proprietary"
-                        Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
-                    <Metadata>
-                        <Item Key="setting.operatingMode">Email</Item>
-                        <Item Key="SignUpTarget">AccountTypeInputCollectorClaimsExchange</Item>
-                    </Metadata>
-                    <DisplayClaims>
-                        <DisplayClaim ClaimTypeReferenceId="email" Required="true" />
-                        <DisplayClaim ClaimTypeReferenceId="password" Required="true" />
-                    </DisplayClaims>
-                    <OutputClaims>
-                        <OutputClaim ClaimTypeReferenceId="email" />
-                        <OutputClaim ClaimTypeReferenceId="password"  />
-                        <OutputClaim ClaimTypeReferenceId="objectId" />
+                        <OutputClaim ClaimTypeReferenceId="email" PartnerClaimType="signInNames.emailAddress" />
+                        <OutputClaim ClaimTypeReferenceId="surname" />
                     </OutputClaims>
                 </TechnicalProfile>
             </TechnicalProfiles>
@@ -339,26 +318,12 @@
     <UserJourneys>
         <UserJourney Id="HelloWorldJourney">
             <OrchestrationSteps>
-                <OrchestrationStep Order="1" Type="CombinedSignInAndSignUp" ContentDefinitionReferenceId="SignupOrSigninContentDefinition">
-                    <ClaimsProviderSelections>
-                        <ClaimsProviderSelection ValidationClaimsExchangeId="LocalAccountSigninEmailExchange" />
-                    </ClaimsProviderSelections>
-                    <ClaimsExchanges>
-                        <ClaimsExchange Id="LocalAccountSigninEmailExchange" TechnicalProfileReferenceId="UserSignInCollector" />
-                    </ClaimsExchanges>
-                </OrchestrationStep>
-                <OrchestrationStep Order="2" Type="ClaimsExchange">
-                    <Preconditions>
-                        <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
-                            <Value>objectId</Value>
-                            <Action>SkipThisOrchestrationStep</Action>
-                        </Precondition>
-                    </Preconditions>
+                <OrchestrationStep Order="1" Type="ClaimsExchange">
                     <ClaimsExchanges>
                         <ClaimsExchange Id="SignUpWithLogonEmailExchange" TechnicalProfileReferenceId="UserInformationCollector" />
                     </ClaimsExchanges>
                 </OrchestrationStep>              
-                <OrchestrationStep Order="3" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
+                <OrchestrationStep Order="2" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
             </OrchestrationSteps>
         </UserJourney>
     </UserJourneys>
@@ -373,10 +338,10 @@
             <Protocol Name="OpenIdConnect"/>
             <OutputClaims>
                 <OutputClaim ClaimTypeReferenceId="objectId" PartnerClaimType="sub"/>
-                <!-- <OutputClaim ClaimTypeReferenceId="displayName"/>
-                <OutputClaim ClaimTypeReferenceId="message"/> -->
-                <!-- <OutputClaim ClaimTypeReferenceId="accountType" /> -->
-                <!-- <OutputClaim ClaimTypeReferenceId="email" /> -->
+                <OutputClaim ClaimTypeReferenceId="email" />
+                <OutputClaim ClaimTypeReferenceId="givenName"/>
+                <OutputClaim ClaimTypeReferenceId="surname"/>
+                <OutputClaim ClaimTypeReferenceId="displayName"/>
             </OutputClaims>
             <SubjectNamingInfo ClaimType="sub"/>
         </TechnicalProfile>
