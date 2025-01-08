@@ -10,6 +10,10 @@
 
     <BuildingBlocks>
         <ClaimsSchema>
+            <ClaimType Id="extension_MustResetPassword">
+                <DisplayName>extension_MustResetPassword</DisplayName>
+                <DataType>boolean</DataType>
+            </ClaimType>
             <ClaimType Id="objectId">
                 <DisplayName>unique object Id for subject of the claims being returned</DisplayName>
                 <DataType>string</DataType>
@@ -30,6 +34,18 @@
                 <DisplayName>Surname</DisplayName>
                 <DataType>string</DataType>
                 <UserHelpText>Your surname (also known as family name or last name).</UserHelpText>
+                <UserInputType>TextBox</UserInputType>
+            </ClaimType>
+            <ClaimType Id="emailOrXxxId">
+                <DisplayName>Email Address or XxxId</DisplayName>
+                <DataType>string</DataType>
+                <UserHelpText>Email address or XxxId to use for signing in.</UserHelpText>
+                <UserInputType>TextBox</UserInputType>
+            </ClaimType>
+            <ClaimType Id="xxxId">
+                <DisplayName>XxxId</DisplayName>
+                <DataType>string</DataType>
+                <UserHelpText>Your XxxId.</UserHelpText>
                 <UserInputType>TextBox</UserInputType>
             </ClaimType>
             <ClaimType Id="email">
@@ -139,9 +155,14 @@
                         <Item Key="Operation">Read</Item>
                         <Item Key="RaiseErrorIfClaimsPrincipalAlreadyExists">false</Item>
                         <Item Key="RaiseErrorIfClaimsPrincipalDoesNotExist">false</Item>
+                        <!--Insert b2c-extensions-app application ID here, for example: 00001111-aaaa-2222-bbbb-3333cccc4444-->  
+                        <Item Key="ClientId"></Item>
+                        <!--Insert b2c-extensions-app application ObjectId here, for example: aaaaaaaa-0000-1111-2222-bbbbbbbbbbbb-->
+                        <Item Key="ApplicationObjectId"></Item>
                     </Metadata>
                     <InputClaims>
-                        <InputClaim ClaimTypeReferenceId="email" PartnerClaimType="signInNames.emailAddress" Required="true" />
+                        <!-- <InputClaim ClaimTypeReferenceId="email" PartnerClaimType="signInNames.emailAddress" Required="true" /> -->
+                        <InputClaim ClaimTypeReferenceId="emailOrXxxId" PartnerClaimType="signInNames.emailAddress" Required="true" />
                     </InputClaims>
                     <OutputClaims>
                         <OutputClaim ClaimTypeReferenceId="objectId" />
@@ -149,6 +170,9 @@
                         <OutputClaim ClaimTypeReferenceId="givenName"/>
                         <OutputClaim ClaimTypeReferenceId="surname"/>
                         <OutputClaim ClaimTypeReferenceId="displayName"/>
+                        <OutputClaim ClaimTypeReferenceId="email" PartnerClaimType="signInNames.emailAddress"/>
+                        <OutputClaim ClaimTypeReferenceId="xxxId" PartnerClaimType="signInNames.xxxId"/>
+                        <OutputClaim ClaimTypeReferenceId="extension_MustResetPassword" />
                     </OutputClaims>
                 </TechnicalProfile>
             </TechnicalProfiles>
@@ -176,7 +200,7 @@
                         <Item Key="IdTokenAudience">IdentityExperienceFramework_populate_by_value</Item>
                     </Metadata>
                     <InputClaims>
-                        <InputClaim ClaimTypeReferenceId="email" PartnerClaimType="username" Required="true" />
+                        <InputClaim ClaimTypeReferenceId="emailOrXxxId" PartnerClaimType="username" Required="true" />
                         <InputClaim ClaimTypeReferenceId="password" PartnerClaimType="password" Required="true" />
                         <InputClaim ClaimTypeReferenceId="grant_type" DefaultValue="password" />
                         <InputClaim ClaimTypeReferenceId="scope" DefaultValue="openid" />
@@ -197,11 +221,11 @@
                         <Item Key="SignUpTarget">AccountTypeInputCollectorClaimsExchange</Item>
                     </Metadata>
                     <DisplayClaims>
-                        <DisplayClaim ClaimTypeReferenceId="email" Required="true" />
+                        <DisplayClaim ClaimTypeReferenceId="emailOrXxxId" Required="true" />
                         <DisplayClaim ClaimTypeReferenceId="password" Required="true" />
                     </DisplayClaims>
                     <OutputClaims>
-                        <OutputClaim ClaimTypeReferenceId="email" />
+                        <OutputClaim ClaimTypeReferenceId="emailOrXxxId" />
                         <OutputClaim ClaimTypeReferenceId="password"  />
                         <OutputClaim ClaimTypeReferenceId="objectId" />
                     </OutputClaims>
@@ -227,7 +251,7 @@
                     <ClaimsExchanges>
                     <ClaimsExchange Id="AADUserReaderExchange" TechnicalProfileReferenceId="AAD-UserRead"/>
                     </ClaimsExchanges>
-                </OrchestrationStep>                                                               
+                </OrchestrationStep>
                 <OrchestrationStep Order="3" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
             </OrchestrationSteps>
         </UserJourney>
@@ -249,6 +273,8 @@
                 <OutputClaim ClaimTypeReferenceId="givenName" />
                 <OutputClaim ClaimTypeReferenceId="surname" />
                 <OutputClaim ClaimTypeReferenceId="displayName" />
+                <OutputClaim ClaimTypeReferenceId="xxxId" />
+                <OutputClaim ClaimTypeReferenceId="extension_MustResetPassword" />
             </OutputClaims>
             <SubjectNamingInfo ClaimType="sub"/>
         </TechnicalProfile>
